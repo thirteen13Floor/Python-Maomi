@@ -75,7 +75,9 @@ class PrpCrypt(object):
 
         return result.hexdigest()
 
-    def with_open(self):
+
+    def get_data_url(self):
+
         html = '''
 <style>
 .chain{
@@ -111,12 +113,9 @@ height:100%;}
 <body>
 <div class="boss">'''
 
-        with open('猫咪全站.html' , 'w+' ,encoding= 'utf-8')as f:
+        with open('猫咪全站.html', 'w+', encoding='utf-8')as f:
             f.write('<title>猫咪全站</title>' + str(html))
-        self.get_data_url()
 
-
-    def get_data_url(self):
         page = 677
         for i in range(1,677):
             try:
@@ -128,7 +127,7 @@ height:100%;}
   "type_id": 0,
   "vip": 0,
   "year": ""
-}"""%i#这里不要乱改格式，不然加密对不上号
+}"""%i       #这里不要乱改格式，不然加密对不上号
                 print('\033[31m=\033[0m' *80 ,'正在爬猫咪全站第{}页 ， 总共：677 ，剩余{}页'.format(i , page) ,'\033[31m=\033[0m' *80)
                 params = self.aes_Encrypt(params)
                 sig = 'QEBBQADSwrXIXaNqBmMofjfRY/8Sxaxgparams{}version25QEBBQADSwrXIXaNqBmMofjfRY/8Sxaxg'.format(params)
@@ -183,4 +182,4 @@ height:100%;}
 
 if __name__ == '__main__':
     pc = PrpCrypt()
-    pc.with_open()
+    pc.get_data_url()
