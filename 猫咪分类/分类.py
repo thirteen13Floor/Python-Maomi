@@ -123,55 +123,63 @@ height:100%;}
     def get_data_url(self,sort_id,page,file_name):
         page1 = page
         for i in range(1,int(page)):
-            page -= 1
-            params = """{
+            try:
+                page -= 1
+                params = """{
   "page": %s,
   "special_id": %s
 }"""%(i , sort_id)#这里不要乱改格式，不然加密对不上号
-            print('\033[31m=\033[0m' *70 ,'正在爬',file_name,'总共：{} ，剩余{}页'.format(page1,page) ,'\033[31m=\033[0m' *70)
-            params = self.aes_Encrypt(params)
-            sig = 'QEBBQADSwrXIXaNqBmMofjfRY/8Sxaxgparams{}version25QEBBQADSwrXIXaNqBmMofjfRY/8Sxaxg'.format(params)
-            sign = self.md5(sig)
+                print('\033[31m=\033[0m' *70 ,'正在爬',file_name,'总共：{} ，剩余{}页'.format(page1,page) ,'\033[31m=\033[0m' *70)
+                params = self.aes_Encrypt(params)
+                sig = 'QEBBQADSwrXIXaNqBmMofjfRY/8Sxaxgparams{}version25QEBBQADSwrXIXaNqBmMofjfRY/8Sxaxg'.format(params)
+                sign = self.md5(sig)
 
-            data = {
-                    'params': params,
-                    'version': 25,
-                    'sign': sign
-                }
+                data = {
+                        'params': params,
+                        'version': 25,
+                        'sign': sign
+                    }
 
-            url = 'http://150.109.116.53:8089/api/special/video'
+                url = 'http://150.109.116.53:8089/api/special/video'
 
-            response = requests.post(url , headers = self.headers , data = data).text
-            encrypts = json.loads(self.decrypt(str(response)))["data"]["data"]#解密
-            for a in encrypts:
-                i_d = a['video_id']
-                pic = a['image']
-                title = a['video_name']
-                self.video_m3u8(i_d , pic , title , file_name)
+                response = requests.post(url , headers = self.headers , data = data).text
+                encrypts = json.loads(self.decrypt(str(response)))["data"]["data"]#解密
+                for a in encrypts:
+                    i_d = a['video_id']
+                    pic = a['image']
+                    title = a['video_name']
+                    self.video_m3u8(i_d , pic , title , file_name)
+
+            except Exception as d:
+                print('\033[31m错误' + str(d) + '\033[0m')
 
     def video_m3u8(self , i_d , pic , title , file_name):
-        params = '''{
+        try:
+            params = '''{
   "id": %s,
   "user_id": 12093108
 }'''%i_d
-        params = self.aes_Encrypt(params)
-        sig = 'QEBBQADSwrXIXaNqBmMofjfRY/8Sxaxgparams{}version25QEBBQADSwrXIXaNqBmMofjfRY/8Sxaxg'.format(params)
-        sign = self.md5(sig)
-        data = {
-                'params': params,
-                'version': 25,
-                'sign': sign    }
-        url = 'http://150.109.116.53:8089/api/video/detail'
-        response = requests.post(url , headers = self.headers , data = data).text
-        encrypts = json.loads(self.decrypt(str(response)))["data"]['videos']
-        for a in encrypts:
-            mp4 = a['down']
-            m3u8 = a['file']
-            aggregate = '<h2><div><p class="txt">{}</p><img src="{}"><a class="chain" href = "{}"target="_blank">接口1</a>'.format(title, pic, mp4) + '<a class="chain" href = "{}"target="_blank">接口2</a>'.format(m3u8) + '</div></h2>'
-            print(aggregate)
+            params = self.aes_Encrypt(params)
+            sig = 'QEBBQADSwrXIXaNqBmMofjfRY/8Sxaxgparams{}version25QEBBQADSwrXIXaNqBmMofjfRY/8Sxaxg'.format(params)
+            sign = self.md5(sig)
+            data = {
+                    'params': params,
+                    'version': 25,
+                    'sign': sign    }
+            url = 'http://150.109.116.53:8089/api/video/detail'
+            response = requests.post(url , headers = self.headers , data = data).text
+            encrypts = json.loads(self.decrypt(str(response)))["data"]['videos']
+            for a in encrypts:
+                mp4 = a['down']
+                m3u8 = a['file']
+                aggregate = '<h2><div><p class="txt">{}</p><img src="{}"><a class="chain" href = "{}"target="_blank">接口1</a>'.format(title, pic, mp4) + '<a class="chain" href = "{}"target="_blank">接口2</a>'.format(m3u8) + '</div></h2>'
+                print(aggregate)
 
-            with open(file_name+'.html' , 'a' , encoding= 'utf-8')as f:
-                f.write(aggregate + '\n')
+                with open(file_name+'.html' , 'a' , encoding= 'utf-8')as f:
+                    f.write(aggregate + '\n')
+
+        except Exception as d:
+            print('\033[31m错误' + str(d) + '\033[0m')
 
 if __name__ == '__main__':
     pc = PrpCrypt()  
