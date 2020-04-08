@@ -129,7 +129,7 @@ height:100%;}
   "vip": 0,
   "year": ""
 }"""%i#这里不要乱改格式，不然加密对不上号
-                print('\033[31m=\033[0m' *80 ,'正在爬猫咪全站','总共：677 ，剩余{}页'.format(page) ,'\033[31m=\033[0m' *80)
+                print('\033[31m=\033[0m' *80 ,'正在爬猫咪全站第{}页 ， 总共：677 ，剩余{}页'.format(i , page) ,'\033[31m=\033[0m' *80)
                 params = self.aes_Encrypt(params)
                 sig = 'QEBBQADSwrXIXaNqBmMofjfRY/8Sxaxgparams{}version25QEBBQADSwrXIXaNqBmMofjfRY/8Sxaxg'.format(params)
                 sign = self.md5(sig)
